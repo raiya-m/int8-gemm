@@ -1,14 +1,16 @@
 #pragma once 
 
 #include "matrix.h"
-#include <cstdint> 
+#include <cstdint> //exact size integer types
 
-Matrix<float> gemm_float_reference(
-    const Matrix<float>& A,
-    const Matrix<float>& B
+// take two float matrices and return 2d float matrix
+std::vector<std::vector<float>> multiply_float_matrices(
+    const std::vector<std::vector<float>>& A,
+    const std::vector<std::vector<float>>& B
 );
 
-Matrix<int32_t> gemm_int8_basic(
-    const Matrix<int8_t>& A,
-    const Matrix<int8_t>& B
+// take two int8 matrices and return an int32 matrix
+std::vector<std::vector<int32_t>> multiply_int8_matrices(
+    const std::vector<std::vector<int8_t>>& A,
+    const std::vector<std::vector<int8_t>>& B
 );

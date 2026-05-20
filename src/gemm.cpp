@@ -34,3 +34,37 @@ std::vector<std::vector<float>> multiply_float_matrices(
 
     return C;
 }
+
+std::vector<std::vector<int32_t>> multiply_int8_matrices (
+    const std::vector<std::vector<int8_t>>& A,
+    const std::vector<std::vector<int8_t>>& B
+) {
+    int A_rows = A.size();
+    int A_cols = A[0].size();
+
+    int B_rows = B.size();
+    int B_cols = B[0].size();
+
+    if (A_cols != B_rows) {
+        throw std::invalid_argument("matrix dimensions do not match :(");
+    }
+
+    std::vector<std::vector<int32_t>> C(
+        A_rows,
+        std::vector<int32_t>(B_cols, 0)
+    );
+
+    for (int i = 0; i < A_rows; i++) {
+        for (int j = 0; j < B_cols; j++) {
+            int32_t sum = 0;
+
+            for (int k = 0; k < A_cols; k++) {
+                sum = sum + static_cast<int32_t>(A[i][k]) * static_cast<int32_t>(B[k][j]);
+            }
+
+            C[i][j] = sum;
+        }
+    }
+
+    return C; 
+}

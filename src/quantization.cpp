@@ -28,3 +28,7 @@ int8_t quantize_to_int8(float value, float scale) {
     int8_t rounded_int8 = static_cast<int8_t>(rounded);
     return rounded_int8;
 }
+
+float dequantize_from_int8(int8_t value, float scale) {
+    return scale * static_cast<float>(value);
+}

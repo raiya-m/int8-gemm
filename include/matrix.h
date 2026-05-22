@@ -14,10 +14,13 @@ public:
     Matrix(int rows, int cols)
         : rows(rows), cols(cols), data(rows * cols) {}
 
-    T& operator() (int row, int col) const {
-        return data[rows*cols + col];
+    // writable access 
+
+    T& operator() (int row, int col) {
+        return data[row * cols + col];
     }
 
+    // read-only access for const matrices 
     const T& operator() (int row, int col) const {
         return data[row * cols + col];
     }

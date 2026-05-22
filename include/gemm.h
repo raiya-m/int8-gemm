@@ -3,14 +3,31 @@
 #include "matrix.h"
 #include <cstdint> //exact size integer types
 
-// take two float matrices and return 2d float matrix
-std::vector<std::vector<float>> multiply_float_matrices(
-    const std::vector<std::vector<float>>& A,
-    const std::vector<std::vector<float>>& B
+Matrix<float> gemm_float_reference(
+    const Matrix<float>& A,
+    const Matrix<float>& B
 );
 
-// take two int8 matrices and return an int32 matrix
-std::vector<std::vector<int32_t>> multiply_int8_matrices(
+Matrix<int32_t> gemm_int8_basic(
     const std::vector<std::vector<int8_t>>& A,
     const std::vector<std::vector<int8_t>>& B
+);
+
+Matrix<int32_t> gemm_int8_tiled(
+    const Matrix<int8_t>& A,
+    const Matrix<int8_t>& B,
+    int tile_size
+);
+
+// packs B such that B(k, j) becomes contiguous as packed_B[j * K + k]. lovely!
+
+std::vector<int8_t> pack_B_by_columns(
+    const Matrix<int8_t>& B
+);
+
+Matrix<int32_t> gemm_int8_packed_B(
+    const Matrix<int8_t>& A,
+    const std::vector<int8_t>& packed_B,
+    int B_rows,
+    int B_cols
 );

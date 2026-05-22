@@ -92,3 +92,47 @@ Matrix<int32_t> gemm_int8_tiled(
     }
     return C; 
 }
+
+// pack B by columns. normal B access in gemm is b(k, j) which walks down a column. cache unfriendly because we have row-major contiguous storage.
+// pack columns contiguously instead!
+
+std::vector<int8_t> pack_B_by_columns(
+    const Matrix<int8_t>& B
+) {
+    std::vector<int8_t> packed(B.rows * B.cols);
+
+    for (int j = 0; j < B.cols; j++) {
+        for (int k = 0; k < B.rows; k++) {
+            packed[j * B.rows + k] = B(k, j);
+        }
+    }
+    return packed;
+}
+
+// gemm via packed B. 
+
+Matrix<int32_t> gemm_int8_packed_B (
+    const Matrix<int8_t>& A, 
+    const std::vector<int8_t>& packed_B,
+    int B_rows,
+    int B_cols
+) {
+    if (A.cols != B_rows) {
+        throw std::invalid_argument("matrix dimensions do not match :("); 
+    }
+
+    Matrix<int32_t> C(A.rows, B_cols); 
+
+    for (int i = 0; i < A.rows; i++) {
+        for (int j = 0; j < B_cols; j++) {
+            int32_t acc = 0;
+
+            for (int k = 0; k < A.cols; k++) {
+                acc += static_cast<int32_t>(A(i, k)) * 
+                static_cast<int32_t>(packed_B[j * B_rows + k]); 
+            }
+            C(i, j) = acc;
+        }
+    }
+    return C;
+}
